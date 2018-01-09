@@ -3,11 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. meta::
-   :description: Homepage of the reference documentation for Hasura microservices or backend components (BaaS) that are packaged with the platform.
-   :keywords: hasura, docs, Hasura services, hasura microservices, BaaS
+.. .. meta::
+   :description: Homepage of the reference documentation for Hasura  microservices or backend components (BaaS) that are packaged with the platform.
+   :keywords: hasura, docs, Hasura microservices, hasura  microservices, BaaS
 
-.. _Hasura_microservices:
+.. _Hasura_ microservices:
 
 Reference
 ====================
@@ -18,6 +18,5 @@ This section provides a detailed reference of all the APIs that are provided by 
   :maxdepth: 2
 
   data/index
-  auth/api
   filestore/api
   notify

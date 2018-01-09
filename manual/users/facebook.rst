@@ -1,9 +1,9 @@
-.. meta::
-   :description: Reference documentation for integrating Facebook OAuth2.0 based user signup & login with Hasura's Auth service for your web and mobile applications.
+.. .. meta::
+   :description: Reference documentation for integrating Facebook OAuth2.0 based user signup & login with Hasura's Auth microservice for your web and mobile applications.
    :keywords: hasura, docs, auth, facebook signup, facebook login, social login, facebook OAuth, facebook OAuth2.0, integration
 
-Facebook Login
-==============
+Facebook Provider
+=================
 
 Pre-requisites
 --------------
@@ -14,17 +14,18 @@ Pre-requisites
 * In the newly created app's page, and obtain the "App ID" and "App Secret"
   values.
 
-* Now you need to configure Hasura Auth service with these credentials.
+* Now you need to configure Hasura Auth microservice with these credentials.
 
-* To configure, go to your project console (https://console.your-project.hasura-app.io).
+* To configure, go to ``auth.yaml`` in ``conf`` directory inside your Hasura
+  project.
 
-* In the project console, go to Auth -> Sign-In Methods.
+* Under ``facebook``, set ``clientId`` and ``clientSecret``
 
-* Enable Facebook and enter
+.. code-block:: yaml
 
-  * **App ID**: The App ID obtained when creating the application.
-
-  * **App Secret**: The App secret.
+      facebook:
+        clientId: "String"
+        clientSecret: "String"
 
 * Choose your device and Facebook SDK from here:
   https://developers.google.com/identity/choose-auth
@@ -57,11 +58,19 @@ Login/Signup a user with Hasura Auth
   of the logged in Facebook user.
 
 * Once the ``access_token`` is obtained, send the ``access_token`` to Hasura Auth
-  service:
+  microservice:
 
   .. code:: http
 
-    GET /facebook/authenticate?access_token=<access-token> HTTP/1.1
+   POST auth.<cluster-name>.hasura-app.io/v1/login HTTP/1.1
+   Content-Type: application/json
+
+   {
+     "provider" : "facebook",
+     "data" : {
+        "access_token": "String",
+     }
+   }
 
 
 * If successful, this will return a response as follows:
@@ -72,21 +81,19 @@ Login/Signup a user with Hasura Auth
     Content-Type: application/json
 
     {
-      "auth_token": "tpdq0m9whrj7i4vcjn48zq43bqx2",
-      "hasura_roles": [
-        "user"
-      ],
+      "auth_token": "b4b345f980ai4acua671ac7r1c37f285f8f62e29f5090306",
       "hasura_id": 79,
-      "new_user": true
+      "new_user": true,
+      "hasura_roles": [
+          "user"
+      ]
     }
 
 
 * If the user is a new user, ``new_user`` will be true, else false.
 
+* To check if the current user is logged in, make a call to: ``/v1/user/info``.
 
-* To check if the current user is logged in, make a call to:
-  ``/user/account/info``.
+* To logout, make a call to ``/v1/user/logout``.
 
-* To logout, make a call to ``/user/logout``.
-
-* To get Hasura credentials of current logged in user, ``/user/account/info``.
+* To get Hasura credentials of current logged in user, ``/v1/user/info``.

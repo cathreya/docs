@@ -1,9 +1,9 @@
-.. meta::
-   :description: Reference documentation for integrating Github OAuth2.0 based user signup & login with Hasura's Auth service for your web and mobile applications.
+.. .. meta::
+   :description: Reference documentation for integrating Github OAuth2.0 based user signup & login with Hasura's Auth microservice for your web and mobile applications.
    :keywords: hasura, docs, auth, Github signup, Github login, social login, Github OAuth, Github OAuth2.0, integration
 
-LinkedIn
-========
+LinkedIn Provider
+=================
 
 Web apps
 --------
@@ -47,16 +47,19 @@ Pre-requisites
   important**. If you fail to do this, Hasura Auth won't be able to fetch your
   user's email address.
 
-* Now you need to configure Hasura Auth to tell it to use these credentials.
+* Now you need to configure Hasura Auth microservice with these credentials.
 
-  To configure, head over to your project's dashboard (Usually,
-  https://console.your-project.hasura-app.io). On the left sidebar, click on
-  the "Auth" icon. You'll get more options in another sidebar. Click on
-  "LinkedIn" on the left under the "Configure" section.
+* To configure, go to ``auth.yaml`` in ``conf`` directory inside your Hasura
+  project.
 
-  * **CLIENT ID**: The client ID obtained when creating the application.
+* Under ``linkedin``, set ``clientId`` and ``clientSecret``
 
-  * **CLIENT SECRET**: The client secret.
+.. code-block:: yaml
+
+      linkedin:
+        clientId: "String"
+        clientSecret: "String"
+
 
 The flow
 ++++++++
@@ -97,54 +100,44 @@ The flow
 
 * Now your application has to parse the URL and retrieve the authorization code.
 
-* Once the code is retrieved, you have to exchange this code to get the access
-  token.  This is done by making the following ``x-www-form-urlencoded`` HTTP
-  ``POST`` request to https://www.linkedin.com/oauth/v2/accessToken with the
-  following parameters (all of them are mandatory).
+* Once the ``code`` is obtained, send the ``code`` to Hasura Auth
+  microservice:
 
-  * ``grant_type`` : The value of this field should always be: ``authorization_code``.
+.. code-block:: http
 
-  * ``code`` : The authorization code you received from the above step.
+   POST auth.<cluster-name>.hasura-app.io/v1/login HTTP/1.1
+   Content-Type: application/json
 
-  * ``redirect_uri`` : The same ``redirect_uri`` value that you passed in the
-    previous step.
-
-  * ``client_id`` : Your application client ID.
-
-  * ``client_secret`` : Your application client secret.
-
-  Sample call (secure approach)::
-
-      POST /oauth/v2/accessToken HTTP/1.1
-      Host: www.linkedin.com
-      Content-Type: application/x-www-form-urlencoded
-
-      grant_type=authorization_code&code=987654321&redirect_uri=https%3A%2F%2Fwww.myapp.com%2Fauth%2Flinkedin&client_id=123456789&client_secret=shhdonottell
-
-* Once the access token is retrieved from the previous step, make a call to
-  Hasura Auth's ``/linkedin/authenticate``  endpoint to validate the token and
-  then create/login the user. The response from Hasura will also indicate if
-  this user is a newly created user or an old user (via the ``new_user``
-  attribute in the response).
+   {
+     "provider" : "linkedin",
+     "data" : {
+        "code": "String",
+        "redirect_uri": "String",
+     }
+   }
 
 
-API Endpoints
-+++++++++++++
+* If successful, this will return a response as follows:
 
-* To validate the access token and then log the user in (and create if not
-  exists), make a call to
-  ``/linkedin/authenticate?access_token=<ACCESS-TOKEN>``
+  .. code:: http
 
-* To check if the current user is logged in, make a call to:
-  ``/user/account/info``.
+    HTTP/1.1 200 OK
+    Content-Type: application/json
 
-* To logout, make a call to ``/user/logout``.
+    {
+      "auth_token": "b4b345f980ai4acua671ac7r1c37f285f8f62e29f5090306",
+      "hasura_id": 79,
+      "new_user": true,
+      "hasura_roles": [
+          "user"
+      ]
+    }
 
-* To get Hasura credentials of current logged in user, ``/user/account/info``.
 
-Read the API docs to know more about Hasura Auth endpoints
-https://hasura.io/_docs/auth/4.0/swagger-ui/.
+* If the user is a new user, ``new_user`` will be true, else false.
 
+* To check if the current user is logged in, make a call to: ``/v1/user/info``.
 
-.. _implicit grant flow: http://tools.ietf.org/html/rfc6749#section-4.2
-.. _CSRF: http://en.wikipedia.org/wiki/Cross-site_request_forgery
+* To logout, make a call to ``/v1/user/logout``.
+
+* To get Hasura credentials of current logged in user, ``/v1/user/info``.

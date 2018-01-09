@@ -1,9 +1,9 @@
-.. meta::
-   :description: Reference documentation for integrating Google OAuth2.0 based user signup & login with Hasura's Auth service for your web and mobile applications.
+.. .. meta::
+   :description: Reference documentation for integrating Google OAuth2.0 based user signup & login with Hasura's Auth microservice for your web and mobile applications.
    :keywords: hasura, docs, auth, Google signup, Google login, social login, Google OAuth, Google OAuth2.0, integration
 
-Google Login
-============
+Google Provider
+===============
 
 
 Pre-requisites
@@ -15,17 +15,20 @@ Pre-requisites
 
 * Register an application with Google, obtain the Client Id and Client secret.
 
-* Now you need to configure Hasura Auth service with these credentials.
+* Now you need to configure Hasura Auth microservice with these credentials.
 
-* To configure, go to your project console (https://console.your-project.hasura-app.io).
+* To configure, go to ``auth.yaml`` in ``conf`` directory inside your Hasura
+  project.
 
-* In the project console, go to Auth -> Sign-In Methods.
+* Under ``google``, set the array of ``clientIds``
 
-* Enable Google and enter
+.. code-block:: yaml
 
-  * **Client ID**: The client ID obtained when creating the application.
+      google:
+        clientIds: ["String"]
 
-  * **Client Secret**: The client secret.
+
+* **clientId**: The client IDs obtained when creating the application.
 
 * Choose your device and Google SDK from here:
   https://developers.google.com/identity/choose-auth
@@ -57,14 +60,22 @@ Login/Signup a user with Hasura Auth
 * Use Google SDK from above to obtain ``id_token`` (or ``idToken``) of the
   logged in Google user. (In some older platforms you might receive
   ``access_token`` (or ``accessToken``). In that case, you can replace
-  ``id_token`` with ``access_tokens`` in the rest of article.)
+  ``id_token`` with ``access_token`` in the rest of article.)
 
 * Once the ``id_token`` is obtained, send the ``id_token`` to Hasura Auth
-  service:
+  microservice:
 
-  .. code:: http
+.. code-block:: http
 
-    GET /google/authenticate?id_token=<id-token> HTTP/1.1
+   POST auth.<cluster-name>.hasura-app.io/v1/login HTTP/1.1
+   Content-Type: application/json
+
+   {
+     "provider" : "google",
+     "data" : {
+        "id_token": "String",
+     }
+   }
 
 
 * If successful, this will return a response as follows:
@@ -75,21 +86,19 @@ Login/Signup a user with Hasura Auth
     Content-Type: application/json
 
     {
-      "auth_token": "tpdq0m9whrj7i4vcjn48zq43bqx2",
-      "hasura_roles": [
-        "user"
-      ],
+      "auth_token": "b4b345f980ai4acua671ac7r1c37f285f8f62e29f5090306",
       "hasura_id": 79,
-      "new_user": true
+      "new_user": true,
+      "hasura_roles": [
+          "user"
+      ]
     }
 
 
 * If the user is a new user, ``new_user`` will be true, else false.
 
+* To check if the current user is logged in, make a call to: ``/v1/user/info``.
 
-* To check if the current user is logged in, make a call to:
-  ``/user/account/info``.
+* To logout, make a call to ``/v1/user/logout``.
 
-* To logout, make a call to ``/user/logout``.
-
-* To get Hasura credentials of current logged in user, ``/user/account/info``.
+* To get Hasura credentials of current logged in user, ``/v1/user/info``.

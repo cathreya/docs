@@ -1,5 +1,5 @@
-.. meta::
-   :description: Learn how to protect your data by restricting access to users at a role level granularity using the console or using the Data service endpoint itself.
+.. .. meta::
+   :description: Learn how to protect your data by restricting access to users at a role level granularity using the console or using the Data microservice endpoint itself.
    :keywords: hasura, docs, data, permissions, data security, ACL, access control, safety
 
 
@@ -8,7 +8,7 @@ Permissions
 
 The permission layer is designed to restrict the operations that can be performed by various users. Permissions can be defined on various operations (insert/select/update/delete) at a role level granularity. By default, the admin role has unrestricted access to all operations.
 
-It is highly recommended that you read about the session middleware on Hasura. To summarise, the data service gets the current user's (the one who made the request) information (id and role) along with the request. So, the data service applies the permissions as appropriate, for the operation(s) in the request.
+It is highly recommended that you read about the session middleware on Hasura. To summarise, the data microservice gets the current user's (the one who made the request) information (id and role) along with the request. So, the data microservice applies the permissions as appropriate, for the operation(s) in the request.
 
 .. _create_insert_permission:
 
@@ -21,7 +21,7 @@ Let's look at an example, a permission for the ``user`` role to insert into ``ar
 
 .. code-block:: http
 
-   POST data.<project-name>.hasura-app.io/v1/query HTTP/1.1
+   POST data.<cluster-name>.hasura-app.io/v1/query HTTP/1.1
    Content-Type: application/json
    Authorization: <admin-token>
 
@@ -48,7 +48,7 @@ The argument for ``check`` is a boolean expression which has the same syntax as 
 
 .. code-block:: http
 
-   POST data.<project-name>.hasura-app.io/v1/query HTTP/1.1
+   POST data.<cluster-name>.hasura-app.io/v1/query HTTP/1.1
    Content-Type: application/json
    Authorization: <admin-token>
 
@@ -157,7 +157,7 @@ Let's look at an example, a permission for the ``user`` role to select from ``ar
 
 .. code-block:: http
 
-   POST data.<project-name>.hasura-app.io/v1/query HTTP/1.1
+   POST data.<cluster-name>.hasura-app.io/v1/query HTTP/1.1
    Content-Type: application/json
    Authorization: <admin-token>
 
@@ -269,7 +269,7 @@ An example:
 
 .. code-block:: http
 
-   POST data.<project-name>.hasura-app.io/v1/query HTTP/1.1
+   POST data.<cluster-name>.hasura-app.io/v1/query HTTP/1.1
    Content-Type: application/json
    Authorization: <admin-token>
 
@@ -380,7 +380,7 @@ An example:
 
 .. code-block:: http
 
-   POST data.<project-name>.hasura-app.io/v1/query HTTP/1.1
+   POST data.<cluster-name>.hasura-app.io/v1/query HTTP/1.1
    Content-Type: application/json
    Authorization: <admin-token>
 

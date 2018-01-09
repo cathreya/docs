@@ -56,7 +56,7 @@ release-images:
 
 .PHONY: html
 html:
-	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) -D version=$(BUILDVERSION) -D release=$(BUILDVERSION) -A latest_docs_version="0.14" $(BUILDDIR)/html
+	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) -D version=$(BUILDVERSION) -D release=$(BUILDVERSION) -A latest_docs_version="0.15" $(BUILDDIR)/html
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
 .PHONY: html-images
@@ -260,5 +260,5 @@ dummy:
 watch:
 	inotifywait -q -m --recursive -e modify -e move -e create -e delete --exclude '($(BUILDDIR)|.git)' . | while read -r CHANGE; do $(MAKE) html; done
 
-livehtml:
-	sphinx-autobuild -b html -i "$(BUILDDIR)/*" $(ALLSPHINXOPTS) $(BUILDDIR)/html
+livehtml: html-images
+	sphinx-autobuild -b html -i "$(BUILDDIR)/*" $(ALLSPHINXOPTS) $(BUILDDIR)/html --ignore ".git/*"

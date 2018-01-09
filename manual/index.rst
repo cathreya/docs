@@ -1,32 +1,42 @@
-.. meta::
+.. .. meta::
    :description: Homepage for Hasura's reference documentation. List of topics, components and resources.
    :keywords: hasura, docs, reference home, reference, ref home, ref
 
-.. title:: Manual
+.. title:: Hasura Manual
 
 .. _reference:
 
-.. rubric:: Manual
+.. rubric:: Hasura Manual
 
-This is the reference documentation of the entire Hasura platform
+This is the reference documentation of the entire Hasura platform.
 
 .. toctree::
-  :maxdepth: 2
+  :maxdepth: 1
+  :titlesonly:
 
+  getting-started/index
+  install-hasura-cli
+  Moving to v0.15 (existing Hasura users) <migration-v0_15/index>
+  The complete tutorial<tutorial/index>
+  Hasura project <project/index>
+  Hasura cluster <cluster/index>
+  api-console/index
   users/index
   roles/index
   data/index
-  data/permissions
-  data/query-templates
-  files/index
-  email-sms/index
+  data-modelling/index
+  Files <files/index>
+  Emails/SMS <email-sms/index>
+  API gateway <gateway/index>
+  custom-microservices/index
+  git-push configuration <git-push/index>
   custom-domains-ssl
-  cors-settings
-  adding-custom-api/index
-  deploying-webapp/index
-  deploy-docker/index
-  serve-static/index
-  SSH-cluster
-  logs/index
-  SDKs/index
-  reference/index
+  Logs <monitoring-logging/logs/index>
+  ..monitoring-logging/index
+  ..scaling
+  ..backups
+  ..troubleshooting
+  hasura CLI reference <hasuractl/index>
+  hasura.io/hub guide <hub/index>
+  Platform reference <reference/index>
+  

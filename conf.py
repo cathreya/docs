@@ -42,11 +42,16 @@ ALGOLIA_SECRETS = {
 
 # Defaults to development
 CURRENT_ENV = os.getenv("ENV") if os.getenv("ENV") else "development"
+BASE_DOMAIN = "production"
+
+print ('BASE_DOMAIN')
+print (BASE_DOMAIN)
 
 html_context = {
     "APPLICATION_ID": ALGOLIA_SECRETS[CURRENT_ENV]["APPLICATION_ID"],
     "APPLICATION_SEARCH_KEY": ALGOLIA_SECRETS[CURRENT_ENV]["APPLICATION_SEARCH_KEY"],
-    "BASE_DOMAIN": "https://docs.hasura.io/"
+    "SITEMAP_DOMAIN": "https://docs.hasura.io/",
+    "BASE_DOMAIN": "https://docs.hasura.io" if BASE_DOMAIN == "production" else "https://docs.hasura-stg.hasura-app.io"
 }
 
 # End of it
@@ -64,14 +69,18 @@ sys.path.append(abspath(join(dirname(__file__), "_ext")))
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+
+# "sphinxcontrib.fulltoc",
 extensions = [
     "djangodocs",
     "generate_index",
-    "sphinxcontrib.fulltoc",
+    "fulltoc",
     "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
     "sphinxcontrib.swaggerdoc",
-    "sphinxcontrib.httpdomain"
+    "sphinxcontrib.httpdomain",
+    "sphinx.ext.todo",
+    "tabs"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -128,7 +137,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', 'venv', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'venv', 'Thumbs.db', '.DS_Store', 'ref', 'guides', 'tutorials']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -182,6 +191,7 @@ html_theme = "djangodocs"
 
 # Add any paths that contain custom themes here, relative to this directory.
 html_theme_path = ["_theme"]
+html_title = '| Hasura ' + version + ' documentation'
 
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.

@@ -1,5 +1,5 @@
 Data permissions
-=====================
+================
 
 The ``data`` APIs, by default can only be accessed by users with the ``admin`` role. However, we should never include the admin token in any client applications. So, we need to allow access to the ``data`` APIs for roles other than ``admin``. This is handled by the permission layer of the ``data`` APIs, which lets you define row level and column level access control policies for various roles.
 
@@ -8,13 +8,7 @@ What are the typical roles other than ``admin``?
 #. ``user`` for logged in users
 #. ``anonymous`` for users who haven't logged in.
 
-We need to define permissions on all the tables that we have created so far (where applicable) for ``user`` and ``anonymous`` roles. As you've probably guessed, we can use both the console UI and the data API to create permissions.
-Watch this video to see how permissions are defined using the console or continue reading to use the ``data`` API
-
-.. admonition:: Video reference
-
-   For a highly simplified version of this page and a super fast introduction
-   check `this video <https://www.youtube.com/watch?v=lW7iz3cFqAg>`_ out!
+We need to define permissions on all the tables that we have created so far (where applicable) for ``user`` and ``anonymous`` roles. We can use the data API to create permissions. Continue reading to use the ``data`` API
 
 Select
 ------
@@ -34,20 +28,22 @@ Select
 
 .. code-block:: http
 
-   POST data.<project-name>.hasura-app.io/v1/query HTTP/1.1
+   POST data.<cluster-name>.hasura-app.io/v1/query HTTP/1.1
    Content-Type: application/json
    Authorization: <admin-token>
 
    {
-       "type" : "create_select_permission",
-       "args" : {
+      "type" : "create_select_permission",
+      "args" : {
            "table" : "article",
            "role" : "anonymous",
-           "columns" : "*",
-           "filter" : {
-               "is_published" : true
-           }
-       }
+           "permission": {
+              "columns" : "*",
+              "filter" : {
+                "is_published" : true
+            }
+          }
+      }
    }
 
 The response would be as follows:
@@ -65,7 +61,7 @@ We've specified ``*`` for ``columns`` as a short hand notation for all columns. 
 
 .. code-block:: http
 
-   POST data.<project-name>.hasura-app.io/v1/query HTTP/1.1
+   POST data.<cluster-name>.hasura-app.io/v1/query HTTP/1.1
    Content-Type: application/json
    Authorization: <admin-token>
 
@@ -74,12 +70,14 @@ We've specified ``*`` for ``columns`` as a short hand notation for all columns. 
        "args" : {
            "table" : "article",
            "role" : "user",
-           "columns" : "*",
-           "filter" : {
-               "$or" : [
-                   { "is_published" : true },
-                   { "author_id" : "REQ_USER_ID" }
-               ]
+           "permission": {
+              "columns" : "*",
+              "filter" : {
+                "$or" : [
+                    { "is_published" : true },
+                    { "author_id" : "REQ_USER_ID" }
+                ]
+             }
            }
        }
    }
@@ -117,7 +115,7 @@ Update
 
 .. code-block:: http
 
-   POST data.<project-name>.hasura-app.io/v1/query HTTP/1.1
+   POST data.<cluster-name>.hasura-app.io/v1/query HTTP/1.1
    Content-Type: application/json
    Authorization: <admin-token>
 
@@ -126,9 +124,11 @@ Update
        "args" : {
            "table" : "article",
            "role" : "user",
-           "columns" : ["title", "content", "is_published"],
-           "filter" : {
-               "author_id" : "REQ_USER_ID"
+           "permission": {
+             "columns" : ["title", "content", "is_published"],
+             "filter" : {
+                 "author_id" : "REQ_USER_ID"
+             }
            }
        }
    }
@@ -163,7 +163,7 @@ Delete
 
 .. code-block:: http
 
-   POST data.<project-name>.hasura-app.io/v1/query HTTP/1.1
+   POST data.<cluster-name>.hasura-app.io/v1/query HTTP/1.1
    Content-Type: application/json
    Authorization: <admin-token>
 
@@ -172,8 +172,11 @@ Delete
        "args" : {
            "table" : "article",
            "role" : "user",
-           "filter" : {
-               "author_id" : "REQ_USER_ID"
+           "permission": {
+              "columns": ["title", "content"],
+              "filter" : {
+                 "author_id" : "REQ_USER_ID"
+             }
            }
        }
    }
@@ -198,7 +201,7 @@ Insert
 
 .. code-block:: http
 
-   POST data.<project-name>.hasura-app.io/v1/query HTTP/1.1
+   POST data.<cluster-name>.hasura-app.io/v1/query HTTP/1.1
    Content-Type: application/json
    Authorization: <admin-token>
 
@@ -207,8 +210,10 @@ Insert
        "args" : {
            "table" : "article",
            "role" : "user",
-           "check" : {
-               "author_id" : "REQ_USER_ID"
+           "permission": {
+             "check" : {
+                 "author_id" : "REQ_USER_ID"
+             }
            }
        }
    }

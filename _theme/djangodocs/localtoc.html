@@ -1,5 +1,37 @@
 {%- if display_toc %}
-  <h3>DOCS VERSION: <span class="version_txt">v{{version}}</span></h3>
-  <h4 class="toc_header"><a href="{{ pathto('ref/index') }}">{{ _('Table Of Contents') }}</a></h3>
-  {{ toc }}
+  <div class="header_main_logo inline-block">
+    <a href="https://hasura.io/" target="_blank">
+      <div class="img_wrapper inline-block">
+        <img class="responsive logo_img" src="{{ pathto('_images/logo1.svg', 1) }}" />
+      </div>
+    </a>
+    <a class="docs_label" href="{{ pathto('', 1) }}">
+      <div class="inline-block hero"> docs </div>
+    </a>
+    <a class="version_txt">
+      <select value="{{ version }}" onchange="location = this.value;" class="selected">
+        {%- if version == '0.13' %}
+          <option class="option_val" value="{{ BASE_DOMAIN }}/0.13" selected="selected">v0.13</option>
+        {%- else -%}
+          <option class="option_val" value="{{ BASE_DOMAIN }}/0.13">v0.13</option>
+        {% endif %}
+        {%- if version == '0.14' %}
+          <option class="option_val" value="{{ BASE_DOMAIN }}/0.14/manual" selected="selected">v0.14</option>
+        {%- else -%}
+          <option class="option_val" value="{{ BASE_DOMAIN }}/0.14/manual">v0.14</option>
+        {% endif %}
+        {%- if version == '0.15' %}
+          <option class="option_val" value="{{ BASE_DOMAIN }}/0.15" selected="selected">v0.15</option>
+        {%- else -%}
+          <option class="option_val" value="{{ BASE_DOMAIN }}/0.15">v0.15</option>
+        {% endif %}
+      </select>
+    </a>
+  </div>
+  {% set splittedPage = pagename.split('/') %}
+  {%- if splittedPage[0] == 'manual' %}
+    {{ toc_full }}
+  {%- elif splittedPage[0] == 'guides' %}
+    {{ toc }}
+  {% endif %}
 {%- endif %}
